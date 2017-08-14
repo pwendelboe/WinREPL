@@ -1,5 +1,5 @@
 # WinREPL
-WinREPL is a "read-eval-print loop" for x86 and x64 assembly on Windows systems that is useful for testing and/or learning assembly.
+WinREPL is a "read-eval-print loop" shell on Windows that is useful for testing/learning x86 and x64 assembly.
 
 Pre-compiled binaries are available at: https://github.com/zerosum0x0/WinREPL/releases/
 
