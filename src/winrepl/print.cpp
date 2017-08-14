@@ -216,7 +216,7 @@ void winrepl_print_registers(winrepl_t *wr)
 #endif
 
 #if defined(_M_X64) || defined(_M_IX86)
-	printf("flags: %08x ", ctx.EFlags);
+	printf("flags: %08x  ", ctx.EFlags);
 
 	winrepl_print_register_flag("CF", check_bit(ctx.EFlags, 0), check_bit(wr->prev.EFlags, 0));
 	winrepl_print_register_flag("PF", check_bit(ctx.EFlags, 2), check_bit(wr->prev.EFlags, 2));

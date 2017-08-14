@@ -129,6 +129,7 @@ static BOOL winrepl_reset_context(winrepl_t *wr)
 #endif
 
 	wr->prev = ctx;
+	wr->curr = ctx;
 
 	return SetThreadContext(wr->procInfo.hThread, &ctx);
 }
