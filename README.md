@@ -17,7 +17,7 @@ WinREPL is a debugger (parent process) that hollows out a copy of itself (child 
 5. Parent process polls for debug events
 
 ### Commands
-Simply insert. Support for 
+Multiple assembly mnemonics can be executed on a single line by separating with semi-colons. Refer to Keystone Engine documentation for  other syntactic sugar.
 
 Besides being a raw assembler, there are a few extra commands.
 
@@ -38,11 +38,13 @@ Besides being a raw assembler, there are a few extra commands.
 The following commands are not yet implemented but on the Todo list:
 
 ```
-.dep [0/1]              Enable or disable NX-bit.
+.dep addr size [0/1]    Enable or disable NX-bit.
 .stack                  Dump current stack memory contents.
 .string data            Push a string onto the stack.
 .errno                  Get last error code in child process.
 ```
+
+Create a GitHub issue to request other commands.
 
 ### Other Todo
 As always happens, code is rushed and awful.
