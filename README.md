@@ -56,6 +56,7 @@ As always happens, code is rushed and awful.
 5. Support for AT&T syntax
 6. Support for ARM architecture
 7. Perhaps integration with Unicorn for obscure architectures?
+8. Print useful error messages for debug exceptions like access violations
 
 ### Building
 As I don't want to go to prison, the provided binaries (./bin/winrepl_x86.exe and ./bin/winrepl_x64.exe) are not backdoored. That said, this program works via sorcery that is probably suspicious to antivirus.
