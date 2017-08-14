@@ -1,7 +1,7 @@
 # WinREPL
-WinREPL is a "read-eval-print loop" for x86 and x64 assembly on Windows systems. It is similar to yrp604/rappel (Linux) and Tyilo/asm_repl (Mac).
+WinREPL is a "read-eval-print loop" for x86 and x64 assembly on Windows systems. It is similar to yrp604/rappel (Linux) and Tyilo/asm_repl (Mac). There is also enferex/asrepl for a Unicorn (emulated) version, but WinREPL is completely native.
 
-Build with Visual Studio or use pre-compiled binaries available at: https://github.com/zerosum0x0/WinREPL/releases/
+Pre-compiled binaries are available at: https://github.com/zerosum0x0/WinREPL/releases/
 
 ![WinREPL](/screenshot.png?raw=true "WinREPL")
 
