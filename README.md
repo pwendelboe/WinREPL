@@ -49,7 +49,7 @@ Create a GitHub issue to request other commands.
 ### Other Todo
 As always happens, code is rushed and awful.
 
-1. Clean up the hodge-podge of C and C++
+1. Clean up the hodge-podge of C and C++... just make it all C++
 2. Look into label support
 3. Better error handling for debug events
 4. Better command mappings
