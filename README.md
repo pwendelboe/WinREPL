@@ -1,5 +1,5 @@
 # WinREPL
-WinREPL is a "read-eval-print loop" for x86 and x64 assembly on Windows systems.
+WinREPL is a "read-eval-print loop" for x86 and x64 assembly on Windows systems that is useful for testing and/or learning assembly.
 
 Pre-compiled binaries are available at: https://github.com/zerosum0x0/WinREPL/releases/
 
@@ -17,6 +17,8 @@ WinREPL is a debugger (parent process) that hollows out a copy of itself (child 
 5. Parent process polls for debug events
 
 ### Commands
+Simply insert. Support for 
+
 Besides being a raw assembler, there are a few extra commands.
 
 ```
@@ -33,18 +35,30 @@ Besides being a raw assembler, there are a few extra commands.
 .quit                   Exit the program.
 ```
 
-### Building
-As I don't want to go to prison, the provided binaries (./bin/winrepl_x86.exe and ./bin/winrepl_x64.exe) are not backdoored. That said, this program works via sorcery that is probably suspicious to antivirus.
+The following commands are not yet implemented but on the Todo list:
 
-You may wish to build from source for various reasons. At this time, all development is done in VS2015. If you use a different version, you will need to re-compile the Keystone .lib files with the same Microsoft compiler (cl.exe). Refer to http://www.keystone-engine.org/
+```
+.dep [0/1]              Enable or disable NX-bit.
+.stack                  Dump current stack memory contents.
+.string data            Push a string onto the stack.
+.errno                  Get last error code in child process.
+```
 
-### Todo
+### Other Todo
 As always happens, code is rushed and awful.
 
 1. Clean up the hodge-podge of C and C++
 2. Look into label support
 3. Better error handling for debug events
 4. Better command mappings
+5. Support for AT&T syntax
+6. Support for ARM architecture
+7. Perhaps integration with Unicorn for obscure architectures?
+
+### Building
+As I don't want to go to prison, the provided binaries (./bin/winrepl_x86.exe and ./bin/winrepl_x64.exe) are not backdoored. That said, this program works via sorcery that is probably suspicious to antivirus.
+
+You may wish to build from source for various reasons. At this time, all development is done in VS2015. If you use a different version, you will need to re-compile the Keystone .lib files with the same Microsoft compiler (cl.exe). Refer to http://www.keystone-engine.org/
 
 ### License
 The project statically links Keystone and must therefore be GPLv2.
