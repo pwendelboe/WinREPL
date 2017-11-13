@@ -34,7 +34,7 @@ BOOL winrepl_write_shellcode(winrepl_t *wr, unsigned char *encode, size_t size)
 	LPVOID addr = (LPVOID)ctx.Eip;
 #endif
 
-	if (!VirtualProtectEx(wr->procInfo.hProcess, (LPVOID)addr, size, PAGE_READWRITE, &dwOldProtect))
+	if (!VirtualProtectEx(wr->procInfo.hProcess, (LPVOID)addr, size + 1, PAGE_READWRITE, &dwOldProtect))
 		return FALSE;
 
 	if (!WriteProcessMemory(wr->procInfo.hProcess, (LPVOID)addr, (LPCVOID)encode, size, &nBytes))
@@ -43,7 +43,7 @@ BOOL winrepl_write_shellcode(winrepl_t *wr, unsigned char *encode, size_t size)
 	if (!WriteProcessMemory(wr->procInfo.hProcess, (LPVOID)((LPBYTE)addr + size), (LPCVOID)"\xcc", 1, &nBytes))
 		return FALSE;
 
-	if (!VirtualProtectEx(wr->procInfo.hProcess, (LPVOID)addr, size, dwOldProtect, &dwOldProtect))
+	if (!VirtualProtectEx(wr->procInfo.hProcess, (LPVOID)addr, size + 1, dwOldProtect, &dwOldProtect))
 		return FALSE;
 
 	FlushInstructionCache(wr->procInfo.hProcess, (LPCVOID)addr, size + 1);
