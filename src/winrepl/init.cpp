@@ -1,21 +1,5 @@
 #include "repl.h"
 
-BOOL winrepl_start_keystone(winrepl_t *wr)
-{
-	if (wr->ks)
-		return TRUE;
-
-#ifdef _M_X64
-	ks_arch arch = KS_ARCH_X86;
-	ks_mode mode = KS_MODE_64;
-#elif defined(_M_IX86)
-	ks_arch arch = KS_ARCH_X86;
-	ks_mode mode = KS_MODE_32;
-#endif
-
-	return ks_open(arch, mode, &wr->ks) == KS_ERR_OK;
-}
-
 static BOOL winrepl_create_debuggee(winrepl_t *wr)
 {
 	STARTUPINFO si = { 0 };
@@ -153,9 +137,6 @@ static BOOL winrepl_reset_context(winrepl_t *wr)
 
 BOOL winrepl_init(winrepl_t *wr)
 {
-	if (!winrepl_start_keystone(wr))
-		return FALSE;
-
 	if (!winrepl_create_debuggee(wr))
 		return FALSE;
 

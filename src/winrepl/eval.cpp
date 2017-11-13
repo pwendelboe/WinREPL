@@ -1,5 +1,9 @@
 #include "repl.h"
 
+#undef min
+#undef max
+#include <asmtk/asmtk.h>
+
 static void winrepl_fix_rip(winrepl_t *wr)
 {
 	// fix RIP because of \xcc
@@ -106,23 +110,84 @@ void winrepl_debug_shellcode(winrepl_t *wr)
 	winrepl_print_registers(wr);
 }
 
+static BOOL winrepl_assemble(const char *instruction, std::vector<unsigned char> &data, size_t address)
+{
+	using namespace asmjit;
+	using namespace asmtk;
+
+#ifdef _M_X64
+	ArchInfo::Type arch = ArchInfo::kTypeX64;
+#elif defined(_M_IX86)
+	ArchInfo::Type arch = ArchInfo::kTypeX86;
+#endif
+
+	// Setup CodeInfo
+	CodeInfo codeinfo(arch, 0, address);
+
+	// Setup CodeHolder
+	CodeHolder code;
+	Error err = code.init(codeinfo);
+	if (err != kErrorOk)
+	{
+		printf("ERROR: %s\n", DebugUtils::errorAsString(err));
+		return FALSE;
+	}
+
+	// Attach an assembler to the CodeHolder.
+	X86Assembler a(&code);
+
+	// Create AsmParser that will emit to X86Assembler.
+	AsmParser p(&a);
+
+	// Parse some assembly.
+	err = p.parse(instruction);
+
+	// Error handling
+	if (err != kErrorOk)
+	{
+		printf("ERROR: %s (instruction: \"%s\")\n", DebugUtils::errorAsString(err), instruction);
+		return FALSE;
+	}
+
+	// Check for unresolved relocations
+	if (code._relocations.getLength())
+	{
+		puts("ERROR: asmjit, unresolved relocation(s)");
+		return FALSE;
+	}
+
+	// If we are done, you must detach the Assembler from CodeHolder or sync
+	// it, so its internal state and position is synced with CodeHolder.
+	code.sync();
+
+	// Now you can print the code, which is stored in the first section (.text).
+	CodeBuffer &buffer = code.getSectionEntry(0)->getBuffer();
+	for(size_t i = 0; i < buffer.getLength(); i++)
+		data.push_back(buffer.getData()[i]);
+
+	return TRUE;
+}
+
 
 static BOOL winrepl_run_shellcode(winrepl_t *wr, std::string assembly)
 {
-	size_t count;
-	unsigned char *encode;
-	size_t size;
+	std::vector<std::string> instructions = split(assembly, ";");
+	std::vector<unsigned char> data;
 
-	if (ks_asm(wr->ks, assembly.c_str(), 0, &encode, &size, &count) != KS_ERR_OK)
+#ifdef _M_X64
+	size_t addr = wr->curr.Rip;
+#elif defined(_M_IX86)
+	size_t addr = wr->curr.Eip;
+#endif
+
+	for(std::string &instruction : instructions)
 	{
-		printf("ERROR: ks_asm() failed & count = %zu, error = %u\n", count, ks_errno(wr->ks));
-		return TRUE;
+		if (!winrepl_assemble(instruction.c_str(), data, addr + data.size()))
+			return TRUE;
 	}
 
-	if (!winrepl_write_shellcode(wr, encode, size))
+	if (!winrepl_write_shellcode(wr, data.data(), data.size()))
 		return FALSE;
-
-	ks_free(encode);
 
 	winrepl_debug_shellcode(wr);
 
