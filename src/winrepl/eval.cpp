@@ -86,6 +86,12 @@ void winrepl_debug_shellcode(winrepl_t *wr)
 				break;
 			}
 		}
+
+		if (dbg.dwDebugEventCode == LOAD_DLL_DEBUG_EVENT)
+		{
+			if (dbg.u.LoadDll.hFile)
+				CloseHandle(dbg.u.LoadDll.hFile);
+		}
 	}
 
 	winrepl_fix_rip(wr);

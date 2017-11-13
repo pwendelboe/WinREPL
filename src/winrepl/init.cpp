@@ -63,6 +63,12 @@ static BOOL winrepl_create_debuggee(winrepl_t *wr)
 
 		if (dbg.dwDebugEventCode == CREATE_PROCESS_DEBUG_EVENT)
 			CloseHandle(dbg.u.CreateProcessInfo.hFile);
+
+		if (dbg.dwDebugEventCode == LOAD_DLL_DEBUG_EVENT)
+		{
+			if (dbg.u.LoadDll.hFile)
+				CloseHandle(dbg.u.LoadDll.hFile);
+		}
 	
 		if (dbg.dwDebugEventCode == EXCEPTION_DEBUG_EVENT &&
 			dbg.dwThreadId == wr->procInfo.dwThreadId)
