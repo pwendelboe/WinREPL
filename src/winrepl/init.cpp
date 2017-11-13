@@ -126,7 +126,7 @@ static BOOL winrepl_reset_context(winrepl_t *wr)
 
 	ctx.EFlags = 0;
 #elif defined(_M_IX86)
-	ctx.Eip = (DWORD)ctx.Eip;
+	ctx.Eip = (DWORD)wr->lpStartAddress;
 
 	ctx.Eax = 0;
 	ctx.Ebx = 0;
