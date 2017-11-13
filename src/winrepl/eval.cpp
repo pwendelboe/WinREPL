@@ -2,7 +2,7 @@
 
 static void winrepl_fix_rip(winrepl_t *wr)
 {
-	// fix RIP becasue of \xcc
+	// fix RIP because of \xcc
 	CONTEXT ctx = { 0 };
 	ctx.ContextFlags = CONTEXT_ALL;
 	GetThreadContext(wr->procInfo.hThread, &ctx);
