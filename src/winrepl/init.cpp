@@ -43,6 +43,17 @@ static BOOL winrepl_create_debuggee(winrepl_t *wr)
 		return FALSE;
 	}
 
+	// workaround for a bug on startup (Windows 8.1 x64), SetThreadContext would fail for some reason
+	CloseHandle(wr->procInfo.hThread);
+	if (!(wr->procInfo.hThread = OpenThread(
+		THREAD_SET_CONTEXT | THREAD_GET_CONTEXT | THREAD_QUERY_INFORMATION,
+		FALSE,
+		wr->procInfo.dwThreadId
+	)))
+	{
+		return FALSE;
+	}
+
 	// swallow initial debug events
 	while (TRUE)
 	{
