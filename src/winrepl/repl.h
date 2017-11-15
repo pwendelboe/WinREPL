@@ -3,7 +3,6 @@
 #include <iostream>
 
 #include <Windows.h>
-#include <keystone/keystone.h>
 
 #include "str.h"
 
@@ -14,7 +13,6 @@ typedef struct _winrepl_context_t
 	PROCESS_INFORMATION procInfo;
 	LPVOID lpStartAddress;
 	SIZE_T nMemSize;
-	ks_engine *ks;
 	CONTEXT prev;
 	CONTEXT curr;
 } winrepl_t;

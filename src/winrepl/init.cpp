@@ -1,21 +1,5 @@
 #include "repl.h"
 
-BOOL winrepl_start_keystone(winrepl_t *wr)
-{
-	if (wr->ks)
-		return TRUE;
-
-#ifdef _M_X64
-	ks_arch arch = KS_ARCH_X86;
-	ks_mode mode = KS_MODE_64;
-#elif defined(_M_IX86)
-	ks_arch arch = KS_ARCH_X86;
-	ks_mode mode = KS_MODE_32;
-#endif
-
-	return ks_open(arch, mode, &wr->ks) == KS_ERR_OK;
-}
-
 static BOOL winrepl_create_debuggee(winrepl_t *wr)
 {
 	STARTUPINFO si = { 0 };
@@ -43,6 +27,17 @@ static BOOL winrepl_create_debuggee(winrepl_t *wr)
 		return FALSE;
 	}
 
+	// workaround for a bug on startup (Windows 8.1 x64), SetThreadContext would fail for some reason
+	CloseHandle(wr->procInfo.hThread);
+	if (!(wr->procInfo.hThread = OpenThread(
+		THREAD_SET_CONTEXT | THREAD_GET_CONTEXT | THREAD_QUERY_INFORMATION,
+		FALSE,
+		wr->procInfo.dwThreadId
+	)))
+	{
+		return FALSE;
+	}
+
 	// swallow initial debug events
 	while (TRUE)
 	{
@@ -52,6 +47,12 @@ static BOOL winrepl_create_debuggee(winrepl_t *wr)
 
 		if (dbg.dwDebugEventCode == CREATE_PROCESS_DEBUG_EVENT)
 			CloseHandle(dbg.u.CreateProcessInfo.hFile);
+
+		if (dbg.dwDebugEventCode == LOAD_DLL_DEBUG_EVENT)
+		{
+			if (dbg.u.LoadDll.hFile)
+				CloseHandle(dbg.u.LoadDll.hFile);
+		}
 	
 		if (dbg.dwDebugEventCode == EXCEPTION_DEBUG_EVENT &&
 			dbg.dwThreadId == wr->procInfo.dwThreadId)
@@ -109,7 +110,7 @@ static BOOL winrepl_reset_context(winrepl_t *wr)
 
 	ctx.EFlags = 0;
 #elif defined(_M_IX86)
-	ctx.Eip = (DWORD)ctx.Eip;
+	ctx.Eip = (DWORD)wr->lpStartAddress;
 
 	ctx.Eax = 0;
 	ctx.Ebx = 0;
@@ -136,9 +137,6 @@ static BOOL winrepl_reset_context(winrepl_t *wr)
 
 BOOL winrepl_init(winrepl_t *wr)
 {
-	if (!winrepl_start_keystone(wr))
-		return FALSE;
-
 	if (!winrepl_create_debuggee(wr))
 		return FALSE;
 
