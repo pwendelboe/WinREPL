@@ -11,13 +11,13 @@ zerosum0x0/WinREPL is similar to yrp604/rappel (Linux) and Tyilo/asm_repl (Mac),
 WinREPL is a debugger (parent process) that hollows out a copy of itself (child process).
 
 1. Parent process retrieves input from the user
-2. Machine code is generated with the Keystone library
+2. Machine code is generated with the ASMTK library
 3. Resulting bytes are written to a child process thread context
 4. Child process thread is resumed
 5. Parent process polls for debug events
 
 ### Commands
-Multiple assembly mnemonics can be executed on a single line by separating with semi-colons. Refer to Keystone Engine documentation for  other syntactic sugar.
+Multiple assembly mnemonics can be executed on a single line by separating with semi-colons. Refer to ASMTK documentation for  other syntactic sugar.
 
 Besides being a raw assembler, there are a few extra commands.
 
@@ -64,4 +64,4 @@ As I don't want to go to prison, the provided binaries (./bin/winrepl_x86.exe an
 You should be able to just initialize the git submodules and build with Visual Studio.
 
 ### License
-ZLIB  Thanks @mrexodia
+ZLIB, a super permissive license. Thanks @mrexodia
